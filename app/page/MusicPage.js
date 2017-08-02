@@ -3,11 +3,13 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
+  Image,
   TouchableOpacity,
   View,
   SectionList,
   TouchableHighlight
 } from 'react-native';
+import Button from 'react-native-button';
 
 export default class MusicPage extends Component {
   constructor(props){
@@ -16,7 +18,8 @@ export default class MusicPage extends Component {
   
   render() {
     return (
-      <View></View>
+      <View>
+      </View>
     )
   }
 }

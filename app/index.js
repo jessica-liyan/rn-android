@@ -18,6 +18,8 @@ import Home from './page/Home'
 import ReadPage from './page/ReadPage'
 import MoviePage from './page/MoviePage'
 import MusicPage from './page/MusicPage'
+import MyPage from './page/MyPage'
+import Login from './component/Login'
 import MovieDetail from './component/MovieDetail'
 import MovieListTab from './component/MovieListTab'
 import MovieTopTab from './component/MovieTopTab'
@@ -126,6 +128,25 @@ export default class App extends Component {
                 rightButtonImage={require('./image/search.png')}  
                 rightButtonIconStyle={styles.rightButton} 
               />
+              <Scene 
+                key="MyPage" 
+                component={MyPage} 
+                title="我的" 
+                tabBarLabel="我的" 
+                tabBarIcon={({focused}) => {
+                  return (
+                    <TabBarItem 
+                      focused={focused}
+                      selectedImage={require('./image/music_active.png')}
+                      normalImage={require('./image/music.png')}
+                    />
+                  )
+                }}
+                navigationBarStyle={[styles.navigationBarStyle,{paddingLeft:30}]}
+                onRight={() => Actions.search()} 
+                rightButtonImage={require('./image/setting.png')}  
+                rightButtonIconStyle={styles.rightButton} 
+              />
             </Scene>
             <Scene key="search" component={SearchItem} title="search" hideNavBar>
             </Scene>
@@ -165,6 +186,12 @@ export default class App extends Component {
               titleStyle={{color:'#fff'}} 
               component={MovieTopBook}>
             </Scene>
+            <Scene 
+              key="Login" 
+              title=""
+              backButtonImage={require('./image/back1.png')} 
+              component={Login}>
+            </Scene> 
           </Scene>
         </Router>
       </View>
