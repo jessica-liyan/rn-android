@@ -20,6 +20,7 @@ import MoviePage from './page/MoviePage'
 import MusicPage from './page/MusicPage'
 import MyPage from './page/MyPage'
 import Login from './component/Login'
+import Register from './component/Register'
 import MovieDetail from './component/MovieDetail'
 import MovieListTab from './component/MovieListTab'
 import MovieTopTab from './component/MovieTopTab'
@@ -191,6 +192,12 @@ export default class App extends Component {
               title=""
               backButtonImage={require('./image/back1.png')} 
               component={Login}>
+            </Scene>
+            <Scene 
+              key="Register" 
+              title=""
+              backButtonImage={require('./image/back1.png')} 
+              component={Register}>
             </Scene> 
           </Scene>
         </Router>

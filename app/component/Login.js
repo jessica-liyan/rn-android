@@ -5,7 +5,8 @@ import {
   View,
   TextInput,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  ToastAndroid
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import Button from 'react-native-button';
@@ -54,7 +55,7 @@ export default class Login extends Component {
           登录
         </Button>
         <View style={styles.row}>
-          <Button style={[styles.buttonText,{borderLeftWidth:0}]} onPress={() => Actions.Login()}>注册账号</Button>
+          <Button style={[styles.buttonText,{borderLeftWidth:0}]} onPress={() => Actions.Register()}>注册账号</Button>
           <Button style={styles.buttonText} onPress={() => Actions.Login()}>忘记密码</Button>
         </View>
         <View style={styles.loginEntry}>
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     marginHorizontal:20
   },
   loginEntryImg:{
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
   }
 });
