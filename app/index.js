@@ -41,6 +41,7 @@ export default class App extends Component {
          animated={true}
          backgroundColor='rgba(0,0,0,0)'
          barStyle="default"
+         barStyle="light-content"
          translucent={Platform.Version <= 21 ? false :true}
         />
         <Router>
