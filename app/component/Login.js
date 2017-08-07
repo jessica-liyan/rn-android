@@ -10,14 +10,33 @@ import {
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import Button from 'react-native-button';
+import store from 'react-native-simple-store';
 
 export default class Login extends Component {
   constructor(props){
     super(props)
     this.state = {
-      username: '',
-      password: ''
+      tel: '',
+      pwd: ''
     }
+    this.onLogin = this.onLogin.bind(this)
+  }
+
+  onLogin(){
+    const {tel, pwd} = this.state;
+    store.delete('userInfo')
+    fetch('http://liuwbox.com/zzbao/app/user/login.htm?tel='+tel+'&pwd='+pwd+'', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(res => {
+      console.log(res)
+      ToastAndroid.show(res.msg, ToastAndroid.SHORT)
+      store.save('userInfo',res.data.userInfo)
+      Actions.MyPage()
+    })
   }
 
   render() {
@@ -31,9 +50,9 @@ export default class Login extends Component {
             placeholder="请输入用户名"
             placeholderTextColor="#ddd"
             selectionColor="#5CACEE"
-            keyboardType="default"
-            onChangeText={(username) => this.setState({username})}
-            value={this.state.username}
+            keyboardType="numeric"
+            onChangeText={(tel) => this.setState({tel})}
+            value={this.state.tel}
           />
           <Image source={require('../image/user.png')} style={styles.loginIcon}/>
         </View>
@@ -46,12 +65,12 @@ export default class Login extends Component {
             selectionColor="#5CACEE"
             keyboardType="numeric"
             secureTextEntry={true}
-            onChangeText={(password) => this.setState({password})}
-            value={this.state.password}
+            onChangeText={(pwd) => this.setState({pwd})}
+            value={this.state.pwd}
           />
           <Image source={require('../image/password.png')} style={styles.loginIcon}/>
         </View>
-        <Button style={styles.button} onPress={() => Actions.Login()}>
+        <Button style={styles.button} onPress={this.onLogin}>
           登录
         </Button>
         <View style={styles.row}>

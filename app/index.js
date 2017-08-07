@@ -21,6 +21,8 @@ import MusicPage from './page/MusicPage'
 import MyPage from './page/MyPage'
 import Login from './component/Login'
 import Register from './component/Register'
+import Setting from './component/Setting'
+import MyData from './component/MyData'
 import MovieDetail from './component/MovieDetail'
 import MovieListTab from './component/MovieListTab'
 import MovieTopTab from './component/MovieTopTab'
@@ -144,7 +146,7 @@ export default class App extends Component {
                   )
                 }}
                 navigationBarStyle={[styles.navigationBarStyle,{paddingLeft:30}]}
-                onRight={() => Actions.search()} 
+                onRight={() => Actions.Setting()} 
                 rightButtonImage={require('./image/setting.png')}  
                 rightButtonIconStyle={styles.rightButton} 
               />
@@ -198,6 +200,22 @@ export default class App extends Component {
               title=""
               backButtonImage={require('./image/back1.png')} 
               component={Register}>
+            </Scene>
+            <Scene 
+              key="Setting" 
+              title="设置"
+              navigationBarStyle={[styles.navigationBarStyle,{paddingRight:30}]}
+              titleStyle={styles.titleStyle}
+              backButtonImage={require('./image/back.png')} 
+              component={Setting}>
+            </Scene> 
+            <Scene 
+              key="MyData" 
+              title="我的资料"
+              navigationBarStyle={[styles.navigationBarStyle,{paddingRight:30}]}
+              titleStyle={styles.titleStyle}
+              backButtonImage={require('./image/back.png')} 
+              component={MyData}>
             </Scene> 
           </Scene>
         </Router>
@@ -232,17 +250,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FBFBFB',
     borderTopWidth:.5,
     borderColor:'#ddd',
-    height: 60
+    height: 60,
   },
   navigationBarStyle:{
     backgroundColor: '#5CACEE',
     paddingTop: Platform.Version <= 21 ? 0 : height,
-    height: 50
+    height: 50,
   },
   titleStyle:{
     color:'#fff',
     fontSize:16,
-    alignSelf:'center'
+    alignSelf:'center',
+    fontWeight: 'normal'
   },
   rightButton:{
     width:20,

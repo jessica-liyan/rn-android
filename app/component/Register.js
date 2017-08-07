@@ -10,26 +10,40 @@ import {
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import Button from 'react-native-button';
+import {postFetch, getFetch} from '../api/index';
+import store from 'react-native-simple-store';
 
 export default class Login extends Component {
   constructor(props){
     super(props)
     this.state = {
-      username: '',
+      tel: '',
+      name: '',
       code: '',
-      password: '',
-      passwordTwice: '',
+      pwd: '',
+      pwdTwice: '',
       secureEntry: true,
       timer: 60,
-      timerTxt: '获取验证码'
+      timerTxt: '获取验证码',
+      gettingCode: false,
     }
+    store.get('userD').then((res)=>{
+      localData = res[res.length - 1]
+      this.setState({
+        tel:localData.tel,
+        name:localData.name,
+        pwd:localData.pwd,
+        pwdTwice:localData.pwd
+      })
+      console.log(res,localData,tel,name,pwd)
+    })
     this.changeSecureEntry = this.changeSecureEntry.bind(this)
     this.setSecureEntry = this.setSecureEntry.bind(this)
     this.onRegister = this.onRegister.bind(this)
     this.timeOut = this.timeOut.bind(this)
     this.setCode = this.setCode.bind(this)
   }
-  // 手机号码的格式验证  给手机号发送验证码  验证码的匹配是否一致  问题：input聚焦的时候底部的数据顶到输入框的上面  
+  // 手机号码的格式验证  问题：input聚焦的时候底部的数据顶到输入框的上面  
   // 注册之后跳转到登录？
   changeSecureEntry(){
     this.setState({
@@ -37,6 +51,8 @@ export default class Login extends Component {
     })
     console.log(this.state.secureEntry)
   }
+
+  // 安全密码输入
   setSecureEntry(){
     let eye = [require('../image/eye.png'),require('../image/eye1.png')]
     let chosenEye = this.state.secureEntry ? eye[0] : eye[1]
@@ -49,19 +65,49 @@ export default class Login extends Component {
     )
   }
 
+  // 获取验证码倒计时
   timeOut(){
-    ToastAndroid.show('验证码已经发送至手机', ToastAndroid.SHORT)
-    setInterval(()=>{
-      this.setState({
-        timer: this.state.timer - 1
+    const {tel, gettingCode} = this.state;
+    if(!tel){
+      ToastAndroid.show('请输入手机号！', ToastAndroid.SHORT)
+    }else if(!gettingCode){
+      fetch('http://liuwbox.com/zzbao/app/user/sms.htm?tel='+ tel +'&type=2', {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(res => res.json()).then(res => {
+        console.log(res)
+        ToastAndroid.show(res.msg, ToastAndroid.SHORT)
+        if(res.status == 1){
+          this.setState({
+            gettingCode: true,
+            timer: 60
+          })
+          let timer = setInterval(()=>{
+            this.setState({
+              timer: this.state.timer - 1
+            })
+            let txt = this.state.timer > 0 ?  this.state.timer + 's后重新获取' : '获取验证码'
+            if(this.state.timer == 0){
+              clearInterval(timer)
+              this.setState({
+                gettingCode: false
+              })
+            }
+            this.setState({
+              timerTxt: txt
+            })
+          },1000)  
+        }
       })
-      let txt = this.state.timer >= 0 ?  this.state.timer + 's后重新获取' : '获取验证码'
-      this.setState({
-        timerTxt: txt
-      })
-    },1000)
+    } else {
+      ToastAndroid.show('验证码已发送至手机！', ToastAndroid.SHORT)
+    }
   }
-  
+
+  // 获取验证码
   setCode(){
     return (
       <TouchableOpacity 
@@ -72,17 +118,40 @@ export default class Login extends Component {
     )
   }
 
-  // 提交表单
+  // 注册表单
   onRegister(){
-    const {username, code, password, passwordTwice} = this.state;
-    if(!username){
-      ToastAndroid.show('请输入手机号或邮箱！', ToastAndroid.SHORT)
+    const {tel, name, code, pwd, pwdTwice} = this.state;
+    if(!tel){
+      ToastAndroid.show('请输入手机号！', ToastAndroid.SHORT)
+    }else if(!name){
+      ToastAndroid.show('请输入姓名！', ToastAndroid.SHORT)
     }else if(!code){
       ToastAndroid.show('请输入手机验证码！', ToastAndroid.SHORT)
-    }else if(!password){
+    }else if(!pwd){
       ToastAndroid.show('请设置密码！', ToastAndroid.SHORT)
-    }else if(password !== passwordTwice){
+    }else if(pwd !== pwdTwice){
       ToastAndroid.show('两次密码输入不一致！', ToastAndroid.SHORT)
+    }else{
+       fetch('http://liuwbox.com/zzbao/app/user/regist.htm?tel='+tel+'&name='+name+'&captcha='+code+'&pwd='+pwd+'', {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(res => res.json()).then(res => {
+        console.log(res)
+        // 本地存储用户信息
+        ToastAndroid.show(res.msg, ToastAndroid.SHORT)
+        if(res.status == 1){
+          store.push('userD',{
+            tel: tel,
+            name: name,
+            pwd: pwd
+          })
+          // 跳转到登录页面
+          Actions.Login()
+        }
+      })
     }
   }
 
@@ -95,12 +164,25 @@ export default class Login extends Component {
           <TextInput
             style={styles.loginInput}
             underlineColorAndroid="transparent"
-            placeholder="手机号/邮箱"
+            placeholder="手机号"
+            placeholderTextColor="#ddd"
+            selectionColor="#5CACEE"
+            keyboardType="numeric"
+            onChangeText={(tel) => this.setState({tel})}
+            value={this.state.tel}
+          />
+          <Image source={require('../image/tel.png')} style={styles.loginIcon}/>
+        </View>
+        <View style={styles.loginWrap}>
+          <TextInput
+            style={styles.loginInput}
+            underlineColorAndroid="transparent"
+            placeholder="真实姓名"
             placeholderTextColor="#ddd"
             selectionColor="#5CACEE"
             keyboardType="default"
-            onChangeText={(username) => this.setState({username})}
-            value={this.state.username}
+            onChangeText={(name) => this.setState({name})}
+            value={this.state.name}
           />
           <Image source={require('../image/user.png')} style={styles.loginIcon}/>
         </View>
@@ -127,8 +209,8 @@ export default class Login extends Component {
             selectionColor="#5CACEE"
             keyboardType="numeric"
             secureTextEntry={secureEntry}
-            onChangeText={(password) => this.setState({password})}
-            value={this.state.password}
+            onChangeText={(pwd) => this.setState({pwd})}
+            value={this.state.pwd}
           />
           <Image source={require('../image/password.png')} style={styles.loginIcon}/>
           {this.setSecureEntry()}
@@ -142,8 +224,8 @@ export default class Login extends Component {
             selectionColor="#5CACEE"
             keyboardType="numeric"
             secureTextEntry={true}
-            onChangeText={(passwordTwice) => this.setState({passwordTwice})}
-            value={this.state.passwordTwice}
+            onChangeText={(pwdTwice) => this.setState({pwdTwice})}
+            value={this.state.pwdTwice}
           />
           <Image source={require('../image/password.png')} style={styles.loginIcon}/>
         </View>
