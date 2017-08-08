@@ -18,11 +18,16 @@ import Home from './page/Home'
 import ReadPage from './page/ReadPage'
 import MoviePage from './page/MoviePage'
 import MusicPage from './page/MusicPage'
+
 import MyPage from './page/MyPage'
 import Login from './component/Login'
 import Register from './component/Register'
 import Setting from './component/Setting'
 import MyData from './component/MyData'
+import ModifyLoginPwd from './component/ModifyLoginPwd'
+import ModifyPayPwd from './component/ModifyPayPwd'
+import ModifyTel from './component/ModifyTel'
+
 import MovieDetail from './component/MovieDetail'
 import MovieListTab from './component/MovieListTab'
 import MovieTopTab from './component/MovieTopTab'
@@ -218,6 +223,30 @@ export default class App extends Component {
               backButtonImage={require('./image/back.png')} 
               component={MyData}>
             </Scene> 
+            <Scene 
+              key="ModifyLoginPwd" 
+              title="修改登录密码"
+              navigationBarStyle={[styles.navigationBarStyle,{paddingRight:30}]}
+              titleStyle={styles.titleStyle}
+              backButtonImage={require('./image/back.png')} 
+              component={ModifyLoginPwd}>
+            </Scene>
+            <Scene 
+              key="ModifyPayPwd" 
+              title="修改支付密码"
+              navigationBarStyle={[styles.navigationBarStyle,{paddingRight:30}]}
+              titleStyle={styles.titleStyle}
+              backButtonImage={require('./image/back.png')} 
+              component={ModifyPayPwd}>
+            </Scene>
+            <Scene 
+              key="ModifyTel" 
+              title="更换绑定手机号码"
+              navigationBarStyle={[styles.navigationBarStyle,{paddingRight:30}]}
+              titleStyle={styles.titleStyle}
+              backButtonImage={require('./image/back.png')} 
+              component={ModifyTel}>
+            </Scene>
           </Scene>
         </Router>
       </View>

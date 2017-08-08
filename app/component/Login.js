@@ -32,9 +32,11 @@ export default class Login extends Component {
         'Content-Type': 'application/json'
       }
     }).then(res => res.json()).then(res => {
-      console.log(res)
       ToastAndroid.show(res.msg, ToastAndroid.SHORT)
       store.save('userInfo',res.data.userInfo)
+      // store.update('userInfo',{
+      //   userLoginPwd: pwd
+      // })
       Actions.MyPage()
     })
   }
